@@ -1,4 +1,9 @@
-# Using Wordpress
+# New endevour into Wordpress Headlessness!
+
+Experimenting and playing around with this codebase. Can we wordpress without a php theme? Oh I hope so...
+
+
+## Using Wordpress
 
 https://using-wordpress.gatsbyjs.org/
 
