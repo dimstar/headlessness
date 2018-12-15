@@ -1,42 +1,29 @@
 module.exports = {
   siteMetadata: {
-    title: `A sample site using gatsby-source-wordpress`,
-    subtitle: `Data fetched from a site hosted on wordpress.com`,
+    title: 'Gatsby + WordPress Starter',
   },
   plugins: [
-    // https://public-api.wordpress.com/wp/v2/sites/gatsbyjsexamplewordpress.wordpress.com/pages/
-    /*
-     * Gatsby's data processing layer begins with “source”
-     * plugins. Here the site sources its data from Wordpress.
-     */
+    'gatsby-plugin-react-helmet',
+    'gatsby-plugin-sass',
     {
-      resolve: `gatsby-source-wordpress`,
+      resolve: 'gatsby-source-wordpress',
       options: {
-        /*
-        * The base URL of the Wordpress site without the trailingslash and the protocol. This is required.
-        * Example : 'gatsbyjswpexample.wordpress.com' or 'www.example-site.com'
-        */
-        baseUrl: `dev-gatbsyjswp.pantheonsite.io`,
-        // The protocol. This can be http or https.
-        protocol: `http`,
-        // Indicates whether the site is hosted on wordpress.com.
-        // If false, then the asumption is made that the site is self hosted.
-        // If true, then the plugin will source its content on wordpress.com using the JSON REST API V2.
-        // If your site is hosted on wordpress.org, then set this to false.
+        // The base url to your WP site.
+        baseUrl: 'wpdemo.gatsbycentral.com',
+        // WP.com sites set to true, WP.org set to false
         hostingWPCOM: false,
-        // If useACF is true, then the source plugin will try to import the Wordpress ACF Plugin contents.
-        // This feature is untested for sites hosted on Wordpress.com
-        useACF: true,
+        // The protocol. This can be http or https.
+        protocol: 'https',
+        // Use 'Advanced Custom Fields' Wordpress plugin
+        useACF: false,
+        auth: {},
+        // Set to true to debug endpoints on 'gatsby build'
+        verboseOutput: false,
       },
     },
-    `gatsby-transformer-sharp`,
-    `gatsby-plugin-sharp`,
-    `gatsby-plugin-glamor`,
-    {
-      resolve: `gatsby-plugin-typography`,
-      options: {
-        pathToConfigModule: `src/utils/typography.js`,
-      },
-    },
+    'gatsby-plugin-sharp',
+    'gatsby-transformer-sharp',
+    'gatsby-plugin-purgecss',
+    'gatsby-plugin-netlify', // make sure to keep it last in the array
   ],
 }

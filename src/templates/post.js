@@ -1,108 +1,122 @@
-import React, { Component } from "react"
-import { graphql } from "gatsby"
-import PropTypes from "prop-types"
-import PostIcons from "../components/PostIcons"
-import Img from "gatsby-image"
-import Layout from "../layouts"
+import React from 'react'
+import PropTypes from 'prop-types'
+import Helmet from 'react-helmet'
+import { graphql, Link } from 'gatsby'
+import Layout from '../components/Layout'
 
-import { rhythm } from "../utils/typography"
-
-class PostTemplate extends Component {
-  render() {
-    const post = this.props.data.wordpressPost
-
-    return (
-      <Layout>
-        <h1 dangerouslySetInnerHTML={{ __html: post.title }} />
-        <PostIcons node={post} css={{ marginBottom: rhythm(1 / 2) }} />
-        <div dangerouslySetInnerHTML={{ __html: post.content }} />
-        {post.acf &&
-          post.acf.page_builder_post &&
-          post.acf.page_builder_post.map((layout, i) => {
-            if (layout.__typename === `WordPressAcf_image_gallery`) {
-              return (
-                <div key={`${i} image-gallery`}>
-                  <h2>ACF Image Gallery</h2>
-                  {layout.pictures.map(({ picture }) => {
-                    const img = picture.localFile.childImageSharp.fluid
-                    return (
-                      <Img
-                        css={{ marginBottom: rhythm(1) }}
-                        key={img.src}
-                        fluid={img}
-                      />
-                    )
-                  })}
+export const BlogPostTemplate = ({
+  content,
+  categories,
+  tags,
+  title,
+  date,
+  author,
+}) => {
+  return (
+    <section className="section">
+      <div className="container content">
+        <div className="columns">
+          <div className="column is-10 is-offset-1">
+            <h1 className="title is-size-2 has-text-weight-bold is-bold-light">
+              {title}
+            </h1>
+            <div dangerouslySetInnerHTML={{ __html: content }} />
+            <div style={{ marginTop: `4rem` }}>
+              <p>
+                {date} - posted by{' '}
+                <Link to={`/author/${author.slug}`}>{author.name}</Link>
+              </p>
+              {categories && categories.length ? (
+                <div>
+                  <h4>Categories</h4>
+                  <ul className="taglist">
+                    {categories.map(category => (
+                      <li key={`${category.slug}cat`}>
+                        <Link to={`/categories/${category.slug}/`}>
+                          {category.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              )
-            }
-            if (layout.__typename === `WordPressAcf_post_photo`) {
-              const img = layout.photo.localFile.childImageSharp.fluid
-              return (
-                <div key={`${i}-photo`}>
-                  <h2>ACF Post Photo</h2>
-                  <Img
-                    css={{ marginBottom: rhythm(1) }}
-                    src={img.src}
-                    fluid={img}
-                  />
+              ) : null}
+              {tags && tags.length ? (
+                <div>
+                  <h4>Tags</h4>
+                  <ul className="taglist">
+                    {tags.map(tag => (
+                      <li key={`${tag.slug}tag`}>
+                        <Link to={`/tags/${tag.slug}/`}>{tag.name}</Link>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              )
-            }
-            return null
-          })}
-      </Layout>
-    )
-  }
+              ) : null}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
 }
 
-PostTemplate.propTypes = {
-  data: PropTypes.object.isRequired,
-  edges: PropTypes.array,
+BlogPostTemplate.propTypes = {
+  content: PropTypes.node.isRequired,
+  title: PropTypes.string,
 }
 
-export default PostTemplate
+const BlogPost = ({ data }) => {
+  const { wordpressPost: post } = data
+
+  return (
+    <Layout>
+      <Helmet title={`${post.title} | Blog`} />
+      <BlogPostTemplate
+        content={post.content}
+        categories={post.categories}
+        tags={post.tags}
+        title={post.title}
+        date={post.date}
+        author={post.author}
+      />
+    </Layout>
+  )
+}
+
+BlogPost.propTypes = {
+  data: PropTypes.shape({
+    markdownRemark: PropTypes.object,
+  }),
+}
+
+export default BlogPost
 
 export const pageQuery = graphql`
-  query($id: String!) {
+  fragment PostFields on wordpress__POST {
+    id
+    slug
+    content
+    date(formatString: "MMMM DD, YYYY")
+    title
+  }
+  query BlogPostByID($id: String!) {
     wordpressPost(id: { eq: $id }) {
+      id
       title
+      slug
       content
-      ...PostIcons
-      acf {
-        page_builder_post {
-          __typename
-          ... on WordPressAcf_post_photo {
-            photo {
-              localFile {
-                childImageSharp {
-                  fluid(maxWidth: 680) {
-                    ...GatsbyImageSharpFluid
-                  }
-                }
-              }
-            }
-          }
-          ... on WordPressAcf_image_gallery {
-            pictures {
-              picture {
-                localFile {
-                  childImageSharp {
-                    fluid(maxWidth: 680) {
-                      ...GatsbyImageSharpFluid
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
+      date(formatString: "MMMM DD, YYYY")
+      categories {
+        name
+        slug
       }
-    }
-    site {
-      siteMetadata {
-        title
-        subtitle
+      tags {
+        name
+        slug
+      }
+      author {
+        name
+        slug
       }
     }
   }

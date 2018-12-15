@@ -1,39 +1,56 @@
-import React, { Component } from "react"
-import { graphql } from "gatsby"
-import PostIcons from "../components/PostIcons"
-import Layout from "../layouts"
+import React from 'react'
+import PropTypes from 'prop-types'
+import { graphql } from 'gatsby'
+import Layout from '../components/Layout'
 
-import { rhythm } from "../utils/typography"
-
-class PageTemplate extends Component {
-  render() {
-    const currentPage = this.props.data.wordpressPage
-
-    return (
-      <Layout>
-        <h1 dangerouslySetInnerHTML={{ __html: currentPage.title }} />
-        <PostIcons node={currentPage} css={{ marginBottom: rhythm(1 / 2) }} />
-        <div dangerouslySetInnerHTML={{ __html: currentPage.content }} />
-      </Layout>
-    )
-  }
+export const PageTemplate = ({ title, content }) => {
+  return (
+    <section className="section section--gradient">
+      <div className="container">
+        <div className="columns">
+          <div className="column is-10 is-offset-1">
+            <div className="section">
+              <h2 className="title is-size-3 has-text-weight-bold is-bold-light">
+                {title}
+              </h2>
+              <div
+                className="content"
+                dangerouslySetInnerHTML={{ __html: content }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
 }
 
-export default PageTemplate
+PageTemplate.propTypes = {
+  title: PropTypes.string.isRequired,
+  content: PropTypes.string,
+}
+
+const Page = ({ data }) => {
+  const { wordpressPage: page } = data
+
+  return (
+    <Layout>
+      <PageTemplate title={page.title} content={page.content} />
+    </Layout>
+  )
+}
+
+Page.propTypes = {
+  data: PropTypes.object.isRequired,
+}
+
+export default Page
 
 export const pageQuery = graphql`
-  query($id: String!) {
+  query PageById($id: String!) {
     wordpressPage(id: { eq: $id }) {
       title
       content
-      date(formatString: "MMMM DD, YYYY")
-    }
-    site {
-      id
-      siteMetadata {
-        title
-        subtitle
-      }
     }
   }
 `
