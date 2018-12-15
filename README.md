@@ -1,4 +1,4 @@
-# New endevour into Wordpress Headlessness!
+# New endeavour into Wordpress Headlessness!
 
 Experimenting and playing around with this codebase. Can we wordpress without a php theme? Oh I hope so...
 
