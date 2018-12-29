@@ -5,6 +5,7 @@
   "author": "GatsbyCentral.com",
   "dependencies": {
     "bulma": "^0.7.0",
+    "dotenv": "^6.2.0",
     "gatsby": "^2.0.0",
     "gatsby-awesome-pagination": "^0.3.3",
     "gatsby-plugin-lodash": "^3.0.1",
