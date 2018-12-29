@@ -8,6 +8,7 @@ static/admin/*.bundle.*
 .DS_Store
 yarn-error.log
 .env
+.env.*
 
 ## Recommended gitignore from gatsbyjs
 
